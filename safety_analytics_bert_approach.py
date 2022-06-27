@@ -10,6 +10,7 @@ Original file is located at
 import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
+import scipy
 
 import streamlit as st
 from sentence_transformers import SentenceTransformer
@@ -32,21 +33,35 @@ st.title("Demo de propuesta con BERT 🧠 para Safety Analytics 🦺")
 query = st.text_input('Introduce the search theme', 'Foot injury')
 n_results = int(st.text_input('Introduce the number of results displayed', '10'))
 
+method = st.selectbox(
+     'What method would you like to be used?',
+     ('Cosine similarity', 'Euclidean Distance'))
+
+st.write('You selected:', method)
+
+if method == 'Cosine similarity':
+	method_binary = True
+else:
+	method_binary = False
+
 query_embedding = model.encode(query).tolist()
 distances_dict = {}
 
 for i, row in enumerate(BERT_dataframe.iterrows()):
   comparison_vector = row[1][1:].squeeze().tolist()
-  distance = dot(query_embedding, comparison_vector)/(norm(query_embedding)*norm(comparison_vector))
+  if method_binary:
+    distance = dot(query_embedding, comparison_vector)/(norm(query_embedding)*norm(comparison_vector))
+  else:
+    distance = scipy.spatial.distance.euclidean(query_embedding, comparison_vector)
   distances_dict[f"{i}"] = distance
 
-sorted_vals = sorted(distances_dict.values(), reverse=True)
+sorted_vals = sorted(distances_dict.values(), reverse=method_binary)
 results = []
 for n in range(n_results):
   results.append(int(list(distances_dict.keys())[list(distances_dict.values()).index(sorted_vals[n])]))
 
 results_dataframe = accident_dataframe.loc[results]
-results_dataframe["Similarity"] = sorted_vals[:n_results]
+results_dataframe[method] = sorted_vals[:n_results]
 
 st.dataframe(results_dataframe)
 
