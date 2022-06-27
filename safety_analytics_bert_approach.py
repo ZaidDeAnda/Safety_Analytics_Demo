@@ -24,16 +24,7 @@ accident_dataframe.drop(["Unnamed: 0"], axis=1, inplace=True)
 
 model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
-BERT_dataframe = accident_dataframe[["Description"]]
-
-sentences = BERT_dataframe.squeeze().tolist()
-embeddings = model.encode(sentences)
-
-for i in range(embeddings.shape[1]):
-  embedding_list = []
-  for embed in embeddings:
-    embedding_list.append(embed[i])
-  BERT_dataframe[f"{i}-value"] = embedding_list
+BERT_dataframe = pd.read_csv("data/BERT_dataframe.csv)
 
 query = st.text_input('Introduce the search theme', 'Foot injury')
 n_results = int(st.text_input('Introduce the number of results displayed', '10'))
