@@ -25,6 +25,10 @@ model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 BERT_dataframe = pd.read_csv("data/BERT_dataframe.csv")
 BERT_dataframe.drop(["Unnamed: 0"], axis=1, inplace=True)
 
+st.title("Demo de propuesta con BERT 🧠 para Safety Analytics 🦺")
+
+
+
 query = st.text_input('Introduce the search theme', 'Foot injury')
 n_results = int(st.text_input('Introduce the number of results displayed', '10'))
 
