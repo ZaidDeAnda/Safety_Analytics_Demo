@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1fHyA39KgjbTQVx89nbTOA16ZiwfxXIqb
 """
 
-!pip install -U sentence-transformers
-
 import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
